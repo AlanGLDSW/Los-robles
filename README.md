@@ -17,30 +17,21 @@ Páginas publicadas: **login.html** (página principal), **index.html** (registr
 | Footer con datos de identificación | `<footer class="site-footer">`: curso, nombre, código y correo |
 | Imagen de fondo | `fondo.jpg`, aplicada al `body` |
 
-### Archivos para el despliegue
+### Archivos para el despliegue:
 
 - `server.js`: servidor Node.js con Express que sirve el sitio y usa el puerto que asigna Railway (`PORT`).
 - `package.json`: dependencias y comando de inicio (`npm start`).
 
-### Probar en tu computadora
 
-```bash
-npm install
-npm start
-```
 
-Después abre http://localhost:3000
+### Se publica en Railway
 
-### Publicar en Railway
-
-1. Sube estos archivos a tu repositorio de GitHub.
-2. Entra a https://railway.com e inicia sesión con tu cuenta de GitHub.
-3. Crea un proyecto: **New Project → Deploy from GitHub repo** y elige `Residencial-Los-Robles`.
-4. Railway detecta que es una app de Node.js, ejecuta `npm install` y luego `npm start`.
+1. Una vez que se suben los archivos a este repositorio de GitHub.
+2. Se inicia sesión con tu cuenta de GitHub en Railway.
+3. Crea un proyecto: **New Project → Deploy from GitHub repo** y elige `Los-Robles`.
+4. Railway hace el despliegue.
 5. Cuando termine el despliegue, abre el servicio y ve a **Settings → Networking → Generate Domain** para obtener la URL pública.
-6. Abre la URL y verifica que carguen las páginas.
+6. Abre la URL y se verifica que carguen las páginas correctamente.
+7. 7 Todo OK
 
-### Firebase
 
-Para que el login y el registro funcionen en el dominio de Railway, agrega ese dominio en
-Firebase Console → Authentication → Settings → **Authorized domains**.
