@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagos en línea: Residencial Los Robles</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7f9;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        margin: 10px;
+        color: #094e24;
+      }
+
+      .navbar {
+        background-color: #2d5c27;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+
+      .nav-logo .logo-img {
+        height: 40px;
+        margin-right: 10px;
+        border-radius: 5px;
+      }
+
+      .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 1.5rem;
+      }
+
+      .nav-link {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-link.logout {
+        color: #ff6b6b;
+      }
+
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+      }
+
+      .bar {
+        width: 25px;
+        height: 3px;
+        background-color: white;
+        margin: 3px 0;
+        transition: 0.3s;
+      }
+
+    .contenedor {
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h3 {
+    color: #215509;
+    border-bottom: 2px solid #2b8608;
+    padding-bottom: 5px;
+    }
+
+    .saldo-section {
+    text-align: center;
+    margin-bottom: 30px;
+    }
+
+    .saldo-monto {
+    font-size: 36px;
+    color: #b30000;
+    font-weight: bold;
+    }
+
+    .tabla-cuotas, .tabla-historial {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    }
+
+    .tabla-cuotas th, .tabla-cuotas td,
+    .tabla-historial th, .tabla-historial td {
+    border: 1px solid #426110;
+    padding: 10px;
+    text-align: center;
+    }
+
+    .btn-pagar {
+    background-color: #094e24;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+    .btn-pagar a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+    }
+
+    .btn-pagar a:hover {
+      color: black;
+      font-weight: 500;
+    }
+
+    .btn-pagar:hover {
+    background-color: #e6d822;
+    color: black;
+    text-decoration: underline;
+    }
+
+    .formulario-section {
+    margin-top: 40px;
+    }
+
+    .form-pago {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    }
+
+    .form-pago input, .form-pago select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #bbb;
+    }
+
+    .btn-confirmar {
+    background-color: #064e06;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+    .btn-confirmar:hover {
+    background-color: #00a300;
+    text-decoration: underline;
+    }
+
+    .btn-cancelar {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+.btn-cancelar:hover {
+  background-color: #999;
+}
+
+    .btn-recibo {
+    color: #1e4707;
+    text-decoration: none;
+    font-weight: bold;
+    }
+
+    .btn-recibo:hover {
+    text-decoration: underline;
+    transition: all 0.3s ease;
+    }
+
+    .btn-confirmar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .metodos-guardados-section {
+      margin-top: 40px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 2px solid #e9ecef;
+    }
+
+    .no-metodos {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .btn-agregar-metodo {
+      background: #185827;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+      display: block;
+      width: 100%;
+    }
+
+    .btn-agregar-metodo:hover {
+      background: #258b39;
+    }
+
+    .lista-metodos {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .metodo-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .metodo-card:hover {
+      border-color: #007bff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .metodo-card.seleccionado {
+      border-color: #0c3b17;
+      background: #f8fff9;
+    }
+
+    .metodo-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .metodo-tipo {
+      background: #6c757d;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .metodo-details p {
+      margin: 5px 0;
+      color: #666;
+    }
+
+    .metodo-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-usar {
+      background: #007bff;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-eliminar {
+      background: #dc3545;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-usar:hover {
+      background: #0056b3;
+    }
+
+    .btn-eliminar:hover {
+      background: #c82333;
+    }
+
+    .metodo-seleccionado-info {
+      background: #e7f3ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      border-left: 4px solid #007bff;
+    }
+
+
+@media screen and (max-width: 768px) {
+        .hamburger {
+          display: flex;
+        }
+
+        .nav-menu {
+          position: fixed;
+          left: -100%;
+          top: 60px;
+          flex-direction: column;
+          background-color: #2d5c27;
+          width: 100%;
+          text-align: center;
+          transition: 0.3s;
+          box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+          padding: 1rem 0;
+          gap: 0;
+        }
+
+        .nav-menu.active {
+          left: 0;
+        }
+
+        .nav-item {
+          margin: 0.5rem 0;
+        }
+
+        .info-section {
+          grid-template-columns: 1fr;
+        }
+
+        .shortcuts-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+
+        .metodo-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+        
+        .metodo-actions {
+          flex-direction: row;
+          width: 100%;
+        }
+        
+        .btn-usar, .btn-eliminar {
+          flex: 1;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .shortcuts-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .banner h2 {
+          font-size: 1.5rem;
+        }
+
+        .banner p {
+          font-size: 1rem;
+        }
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(245, 247, 249, 0.8);
+        color: #666;
+        font-size: 14px;
+      }
+
+  </style>
+</head>
+<body>
+
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <a href="homepage.html">
+          <img
+            src="./robles-connect.jpg"
+            alt="Logo Robles Connect"
+            class="logo-img"
+          />
+        </a>
+          <span>Los Robles residencial</span>
+        </div>
+        <ul class="nav-menu" id="nav-menu">
+          <li class="nav-item">
+            <a href="homepage.html" class="nav-link active"
+              ><i class="fas fa-home"></i> Inicio</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"
+              ><i class="fas fa-file-invoice-dollar"></i> Estado de Cuenta</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="pagos.html" class="nav-link"
+              ><i class="fas fa-credit-card"></i> Pagar en Línea</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"
+              ><i class="fas fa-chart-line"></i> Transparencia</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"
+              ><i class="fas fa-calendar-alt"></i> Reservas</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"
+              ><i class="fas fa-bullhorn"></i> Comunicados</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"
+              ><i class="fas fa-cog"></i> Configuración</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="login.html" class="nav-link logout"
+              ><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a
+            >
+          </li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+  <header class="encabezado">
+    <h1>Portal de pagos en línea</h1>
+  </header>
+
+  <main class="contenedor">
+
+    <section class="saldo-section">
+      <h3>Saldo pendiente</h3>
+      <p class="saldo-monto">$3,000.00</p>
+    </section>
+
+    <section class="cuotas-section">
+      <h3>Cuotas pendientes</h3>
+      <table class="tabla-cuotas">
+        <thead>
+          <tr>
+            <th>Periodo</th>
+            <th>Monto</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Octubre 2025</td>
+            <td>$1,500.00</td>
+            <td><button class="btn-pagar"><a href="metodo-pago.html">Pagar ahora</a></button></td>
+          </tr>
+          <tr>
+            <td>Noviembre 2025</td>
+            <td>$1,500.00</td>
+            <td><button class="btn-pagar"><a href="metodo-pago.html">Pagar ahora</a></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="metodos-guardados-section">
+      <h3>Métodos de pago guardados</h3>
+      <div id="metodos-guardados-container">
+
+      </div>
+      <button class="btn-agregar-metodo" onclick="window.location.href='metodo-pago.html'">
+        Agregar nuevo método de pago
+      </button>
+    </section>
+
+    <section class="formulario-section">
+      <h3>Opciones de pago</h3>
+      <form class="form-pago">
+        <label for="metodo">Método de pago:</label>
+        <select id="metodo" name="metodo">
+          <option value="mercado">Mercado Pago</option>
+          <option value="paypal">PayPal</option>
+          <option value="credito">Tarjeta de Crédito</option>
+          <option value="debito">Tarjeta de Débito</option>
+        </select>
+
+        <label for="monto">Monto a pagar:</label>
+        <input type="text" id="monto" name="monto" value="$3000.00" readonly>
+
+        <button type="submit" class="btn-confirmar"><a href="metodo-pago.html">Continuar</a></button>
+        <button type="button" class="btn-cancelar">Cancelar</button>
+      </form>
+    </section>
+
+    <section class="historial-section">
+      <h3>Historial de Pagos</h3>
+      <table class="tabla-historial">
+        <thead>
+          <tr>
+            <th>Periodo</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Recibo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Septiembre 2025</td>
+            <td>$1500.00</td>
+            <td>25/09/2025</td>
+            <td><a href="#" class="btn-recibo">Descargar</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <script type="text/babel" src="pagos.js"></script>
+      <script>
+      function detectarTipoTarjeta(numero) {
+        if (/^4/.test(numero)) return "Visa";
+        if (/^5[1-5]/.test(numero)) return "MasterCard";
+        if (/^3[47]/.test(numero)) return "American Express";
+        return "Tarjeta";
+      }
+
+      function cargarMetodosGuardados() {
+        const container = document.getElementById('metodos-guardados-container');
+        const metodos = JSON.parse(localStorage.getItem('metodosPago')) || [];
+        const metodoSeleccionado = JSON.parse(localStorage.getItem('metodoPagoSeleccionado'));
+
+        if (metodos.length === 0) {
+          container.innerHTML = `
+            <div class="no-metodos">
+              <p>No tienes métodos de pago guardados. Agrega uno para pagar más rápido.</p>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '<div class="lista-metodos">';
+        metodos.forEach((metodo, index) => {
+          const esSeleccionado = metodoSeleccionado && 
+                                metodoSeleccionado.numeroTarjeta === metodo.numeroTarjeta;
+          const tipoTarjeta = detectarTipoTarjeta(metodo.numeroTarjeta);
+          
+          html += `
+            <div class="metodo-card ${esSeleccionado ? 'seleccionado' : ''}">
+              <div class="metodo-info">
+                <div class="metodo-header">
+                  <h4>💳 ${metodo.nombreTitular}</h4>
+                  <span class="metodo-tipo">${tipoTarjeta}</span>
+                </div>
+                <div class="metodo-details">
+                  <p><strong>Número:</strong> **** **** **** ${metodo.numeroTarjeta.slice(-4)}</p>
+                  <p><strong>Expira:</strong> ${metodo.expiracion}</p>
+                  <p><strong>Dirección:</strong> ${metodo.calle}, ${metodo.colonia}</p>
+                </div>
+              </div>
+              <div class="metodo-actions">
+                <button class="btn-usar" onclick="seleccionarMetodo(${index})">
+                  ${esSeleccionado ? '✓ Seleccionado' : 'Usar'}
+                </button>
+                <button class="btn-eliminar" onclick="eliminarMetodo(${index})">
+                  🗑️ Eliminar
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        html += '</div>';
+
+        if (metodoSeleccionado) {
+          html = `
+            <div class="metodo-seleccionado-info">
+              <p><strong>Método seleccionado:</strong> ${metodoSeleccionado.nombreTitular} - **** ${metodoSeleccionado.numeroTarjeta.slice(-4)}</p>
+            </div>
+          ` + html;
+        }
+
+        container.innerHTML = html;
+      }
+
+      function seleccionarMetodo(index) {
+        const metodos = JSON.parse(localStorage.getItem('metodosPago')) || [];
+        if (metodos[index]) {
+          localStorage.setItem('metodoPagoSeleccionado', JSON.stringify(metodos[index]));
+          alert('Método de pago seleccionado correctamente');
+          cargarMetodosGuardados();
+        }
+      }
+
+      function eliminarMetodo(index) {
+        if (confirm('¿Estás seguro de que quieres eliminar este método de pago?')) {
+          const metodos = JSON.parse(localStorage.getItem('metodosPago')) || [];
+          const metodoAEliminar = metodos[index];
+          const metodoSeleccionado = JSON.parse(localStorage.getItem('metodoPagoSeleccionado'));
+          
+          if (metodoSeleccionado && metodoSeleccionado.numeroTarjeta === metodoAEliminar.numeroTarjeta) {
+            localStorage.removeItem('metodoPagoSeleccionado');
+          }
+          
+          metodos.splice(index, 1);
+          localStorage.setItem('metodosPago', JSON.stringify(metodos));
+          cargarMetodosGuardados(); 
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        cargarMetodosGuardados();
+        
+        const hamburger = document.getElementById("hamburger");
+        const navMenu = document.getElementById("nav-menu");
+
+        hamburger.addEventListener("click", function () {
+          navMenu.classList.toggle("active");
+          hamburger.classList.toggle("active");
+        });
+
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", function () {
+            navMenu.classList.remove("active");
+            hamburger.classList.remove("active");
+          });
+        });
+
+        document.addEventListener("click", function (event) {
+          if (!event.target.closest(".nav-container")) {
+            navMenu.classList.remove("active");
+            hamburger.classList.remove("active");
+          }
+        });
+      });
+    </script>
+
+  </main>
+
+  <footer>
+    <p>© 2025 Residencial Los Robles. Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+</html>
