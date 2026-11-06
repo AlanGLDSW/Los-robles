@@ -1,20 +1,30 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyA2pqsyV3NUAYpsatf_psbxGQzjgaGme-w",
-  authDomain: "residencial-los-robles.firebaseapp.com",
-  projectId: "residencial-los-robles",
-  storageBucket: "residencial-los-robles.firebasestorage.app",
-  messagingSenderId: "259244004877",
-  appId: "1:259244004877:web:374055445e86b61028a744",
-  measurementId: "G-C8G2ME6B09",
-};
+const API = "/api/residentes";
 
-const COLECCION = "residentes";
-
-let db = null;
 let residentes = []; 
 let residenteAbierto = null; 
 
 const $ = (id) => document.getElementById(id);
+
+
+async function pedir(url, opciones = {}) {
+  const resp = await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+    ...opciones,
+  });
+  if (resp.status === 204) return null;
+  let datos = null;
+  try {
+    datos = await resp.json();
+  } catch (e) {
+
+  }
+  if (!resp.ok) {
+    const err = new Error((datos && datos.error) || "Error " + resp.status);
+    err.status = resp.status;
+    throw err;
+  }
+  return datos;
+}
 
 function mostrarEstado(texto, tipo) {
   const el = $("status");
@@ -24,7 +34,7 @@ function mostrarEstado(texto, tipo) {
 
 function formatearFecha(valor) {
   if (!valor) return "—";
-  const fecha = typeof valor.toDate === "function" ? valor.toDate() : new Date(valor);
+  const fecha = new Date(valor);
   if (isNaN(fecha)) return "—";
   return fecha.toLocaleString("es-MX", {
     day: "2-digit",
@@ -59,14 +69,14 @@ async function cargarResidentes() {
   const tbody = $("tabla-residentes");
   tbody.innerHTML = '<tr><td colspan="5" class="empty">Cargando residentes...</td></tr>';
   try {
-    const snap = await db.collection(COLECCION).get();
-    residentes = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    residentes.sort((a, b) => (a.nombre || "").localeCompare(b.nombre || "", "es"));
+    residentes = await pedir(API);
     pintarTabla();
-    mostrarEstado("Conectado a Firebase Firestore. " + residentes.length + " registro(s) cargado(s).", "ok");
+    mostrarEstado("Conectado a PostgreSQL en Railway. " + residentes.length + " registro(s) cargado(s).", "ok");
   } catch (error) {
     console.error("Error al consultar residentes:", error);
+    residentes = [];
     tbody.innerHTML = '<tr><td colspan="5" class="empty">No se pudieron cargar los datos.</td></tr>';
+    $("contador").textContent = "";
     mostrarEstado("Error al consultar la base de datos: " + error.message, "error");
   }
 }
@@ -76,10 +86,11 @@ function pintarTabla() {
   const filtro = $("buscar").value.trim().toLowerCase();
   const editando = $("residente-id").value;
 
-  const lista = residentes.filter((r) =>
-    !filtro ||
-    (r.nombre || "").toLowerCase().includes(filtro) ||
-    (r.apartamento || "").toLowerCase().includes(filtro)
+  const lista = residentes.filter(
+    (r) =>
+      !filtro ||
+      (r.nombre || "").toLowerCase().includes(filtro) ||
+      (r.apartamento || "").toLowerCase().includes(filtro)
   );
 
   tbody.innerHTML = "";
@@ -89,16 +100,17 @@ function pintarTabla() {
     const td = document.createElement("td");
     td.colSpan = 5;
     td.className = "empty";
-    td.textContent = residentes.length === 0
-      ? "No hay residentes registrados. Agrega el primero con el formulario."
-      : "Ningún residente coincide con la búsqueda.";
+    td.textContent =
+      residentes.length === 0
+        ? "No hay residentes registrados. Agrega el primero con el formulario."
+        : "Ningún residente coincide con la búsqueda.";
     tr.appendChild(td);
     tbody.appendChild(tr);
   }
 
   lista.forEach((r) => {
     const tr = document.createElement("tr");
-    if (r.id === editando) tr.className = "selected";
+    if (String(r.id) === editando) tr.className = "selected";
 
     const tdNombre = document.createElement("td");
     tdNombre.textContent = r.nombre || "—";
@@ -129,30 +141,29 @@ function pintarTabla() {
 
 async function verResidente(id) {
   try {
-    const doc = await db.collection(COLECCION).doc(id).get();
-    if (!doc.exists) {
-      alert("El residente ya no existe en la base de datos.");
-      cargarResidentes();
-      return;
-    }
-    const r = doc.data();
-    residenteAbierto = id;
-    $("d-id").textContent = doc.id;
+    const r = await pedir(API + "/" + encodeURIComponent(id));
+    residenteAbierto = r.id;
+    $("d-id").textContent = r.id;
     $("d-nombre").textContent = r.nombre || "—";
     $("d-apartamento").textContent = r.apartamento || "—";
     $("d-telefono").textContent = r.telefono || "—";
     $("d-correo").textContent = r.correo || "—";
     $("d-estado").innerHTML = "";
     $("d-estado").appendChild(crearBadge(r.estado));
-    $("d-fecha").textContent = formatearFecha(r.fechaRegistro);
-    $("d-actualizado").textContent = formatearFecha(r.fechaActualizacion);
+    $("d-fecha").textContent = formatearFecha(r.fecha_registro);
+    $("d-actualizado").textContent = formatearFecha(r.fecha_actualizacion);
 
     $("modal").classList.add("open");
     $("modal").setAttribute("aria-hidden", "false");
-    history.replaceState(null, "", "?id=" + encodeURIComponent(id));
+    history.replaceState(null, "", "?id=" + encodeURIComponent(r.id));
   } catch (error) {
     console.error("Error al consultar el residente:", error);
-    alert("No se pudo consultar el residente: " + error.message);
+    if (error.status === 404) {
+      mostrarEstado("El residente con ID " + id + " no existe en la base de datos.", "error");
+      history.replaceState(null, "", location.pathname);
+    } else {
+      mostrarEstado("No se pudo consultar el residente: " + error.message, "error");
+    }
   }
 }
 
@@ -185,14 +196,8 @@ function limpiarFormulario() {
 
 async function editarResidente(id) {
   try {
-    const doc = await db.collection(COLECCION).doc(id).get();
-    if (!doc.exists) {
-      alert("El residente ya no existe en la base de datos.");
-      cargarResidentes();
-      return;
-    }
-    const r = doc.data();
-    $("residente-id").value = doc.id;
+    const r = await pedir(API + "/" + encodeURIComponent(id));
+    $("residente-id").value = r.id;
     $("nombre").value = r.nombre || "";
     $("apartamento").value = r.apartamento || "";
     $("telefono").value = r.telefono || "";
@@ -207,7 +212,8 @@ async function editarResidente(id) {
     $("nombre").focus();
   } catch (error) {
     console.error("Error al cargar el residente:", error);
-    alert("No se pudo cargar el residente: " + error.message);
+    mostrarEstado("No se pudo cargar el residente: " + error.message, "error");
+    if (error.status === 404) cargarResidentes();
   }
 }
 
@@ -225,11 +231,9 @@ async function guardarResidente(evento) {
   btn.disabled = true;
   try {
     if (id) {
-      datos.fechaActualizacion = firebase.firestore.FieldValue.serverTimestamp();
-      await db.collection(COLECCION).doc(id).update(datos);
+      await pedir(API + "/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify(datos) });
     } else {
-      datos.fechaRegistro = firebase.firestore.FieldValue.serverTimestamp();
-      await db.collection(COLECCION).add(datos);
+      await pedir(API, { method: "POST", body: JSON.stringify(datos) });
     }
     limpiarFormulario();
     await cargarResidentes();
@@ -249,9 +253,9 @@ async function eliminarResidente(id) {
   if (!confirm("¿Seguro que deseas eliminar a " + nombre + "? Esta acción no se puede deshacer.")) return;
 
   try {
-    await db.collection(COLECCION).doc(id).delete();
+    await pedir(API + "/" + encodeURIComponent(id), { method: "DELETE" });
     if (residenteAbierto === id) cerrarDetalle();
-    if ($("residente-id").value === id) limpiarFormulario();
+    if ($("residente-id").value === String(id)) limpiarFormulario();
     await cargarResidentes();
     mostrarEstado("Residente eliminado correctamente.", "ok");
   } catch (error) {
@@ -280,15 +284,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && residenteAbierto) cerrarDetalle();
   });
-
-  try {
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-  } catch (error) {
-    console.error("Error inicializando Firebase:", error);
-    mostrarEstado("Error al conectar con Firebase: " + error.message, "error");
-    return;
-  }
 
   await cargarResidentes();
 

@@ -402,13 +402,13 @@
         <h2 class="page-title">Padrón de residentes</h2>
         <p class="page-intro">
           Consulta, agrega, edita y elimina los residentes guardados en la base
-          de datos (Firebase Firestore).
+          de datos PostgreSQL alojada en Railway.
         </p>
 
         <div id="status" class="status info">Conectando con la base de datos...</div>
 
         <div class="layout">
-
+          <!-- Formulario: agregar y editar -->
           <section class="card">
             <h2 id="form-title">Agregar residente</h2>
             <form id="residente-form" autocomplete="off">
@@ -448,6 +448,7 @@
             </form>
           </section>
 
+          <!-- Lista: consultar todos -->
           <section class="card">
             <h2>Residentes registrados</h2>
             <div class="toolbar">
@@ -498,6 +499,7 @@
       </footer>
     </div>
 
+    <!-- Consulta individual -->
     <div id="modal" class="modal-backdrop" aria-hidden="true">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
         <h2 id="modal-titulo">Detalle del residente</h2>
@@ -519,8 +521,6 @@
       </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="residentes.js"></script>
   </body>
 </html>

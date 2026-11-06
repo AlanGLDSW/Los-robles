@@ -1,7 +1,7 @@
 # Residencial-Los-Robles
 Sistema de gestión administrativa para Residencial Los Robles
 
-## Actividad: Conceptualización de servicios en la nube
+## Materia: Conceptualización de servicios en la nube
 
 Páginas publicadas: **login.html** (página principal), **index.html** (registro),
 **olvide.html** (recuperar contraseña) y **homepage.html** (inicio del residente).
@@ -22,8 +22,6 @@ Páginas publicadas: **login.html** (página principal), **index.html** (registr
 - `server.js`: servidor Node.js con Express que sirve el sitio y usa el puerto que asigna Railway (`PORT`).
 - `package.json`: dependencias y comando de inicio (`npm start`).
 
-
-
 ### Se publica en Railway
 
 1. Una vez que se suben los archivos a este repositorio de GitHub.
@@ -34,4 +32,26 @@ Páginas publicadas: **login.html** (página principal), **index.html** (registr
 6. Abre la URL y se verifica que carguen las páginas correctamente.
 7. 7 Todo OK
 
+## Actividad 3.3: Aplicación web con base de datos (CRUD)
+
+Página **residentes.html**: administra el padrón de residentes guardado en una
+base de datos **PostgreSQL** alojada en Railway.
+
+| Operación | En la página | API (server.js) |
+|---|---|---|
+| Consultar todos | Tabla "Residentes registrados" | `GET /api/residentes` |
+| Consultar uno | Botón **Ver** (o `residentes.html?id=5`) | `GET /api/residentes/:id` |
+| Agregar | Formulario "Agregar residente" | `POST /api/residentes` |
+| Editar | Botón **Editar** | `PUT /api/residentes/:id` |
+| Eliminar | Botón **Eliminar** | `DELETE /api/residentes/:id` |
+
+La tabla `residentes` se crea sola la primera vez que arranca el servidor.
+
+### Base de datos en Railway
+
+1. En el proyecto de Railway: **+ New → Database → Add PostgreSQL**.
+2. En el servicio de la aplicación: **Variables → New Variable**, nombre `DATABASE_URL`,
+   valor `${{Postgres.DATABASE_URL}}`.
+3. Railway vuelve a desplegar la aplicación y se conecta a la base de datos.
+4. Los registros se pueden ver en el servicio Postgres, pestaña **Database → Data**.
 
