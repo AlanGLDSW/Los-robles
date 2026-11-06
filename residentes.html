@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Residentes - Residencial Los Robles</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="comun.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+          url("fondo.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: #333;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(245, 247, 249, 0.97);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .header-nav {
+        margin-left: auto;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .header-nav a {
+        color: white;
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        font-size: 14px;
+      }
+
+      .header-nav a:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      main {
+        padding: 24px;
+      }
+
+      .page-title {
+        color: #2d5c27;
+        margin-bottom: 6px;
+      }
+
+      .page-intro {
+        color: #555;
+        margin-bottom: 18px;
+      }
+
+      .status {
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 18px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .status.ok {
+        background: #e6f4ea;
+        color: #1e6b3a;
+      }
+
+      .status.error {
+        background: #fce8e6;
+        color: #b3261e;
+      }
+
+      .status.info {
+        background: #e8f0fe;
+        color: #1a56b3;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      }
+
+      .card h2 {
+        color: #2d5c27;
+        font-size: 20px;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e5ece3;
+      }
+
+      .form-group {
+        margin-bottom: 14px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #555;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccd5ca;
+        border-radius: 6px;
+        font-size: 15px;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: #2d5c27;
+        outline: none;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 6px;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        color: white;
+        background: #2d5c27;
+        transition: background 0.2s;
+      }
+
+      .btn:hover {
+        background: #234a1f;
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        background: #6b7a68;
+      }
+
+      .btn-secondary:hover {
+        background: #566352;
+      }
+
+      .btn-view {
+        background: #1a73e8;
+      }
+
+      .btn-view:hover {
+        background: #155fc0;
+      }
+
+      .btn-edit {
+        background: #e0a100;
+      }
+
+      .btn-edit:hover {
+        background: #bf8900;
+      }
+
+      .btn-delete {
+        background: #d93025;
+      }
+
+      .btn-delete:hover {
+        background: #b3261e;
+      }
+
+      .btn-sm {
+        padding: 6px 10px;
+        font-size: 13px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .toolbar input {
+        flex: 1;
+        min-width: 180px;
+        padding: 10px 12px;
+        border: 1px solid #ccd5ca;
+        border-radius: 6px;
+        font-size: 15px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 10px 8px;
+        border-bottom: 1px solid #eef1ed;
+        vertical-align: middle;
+      }
+
+      th {
+        background: #eef5ec;
+        color: #2d5c27;
+        font-weight: 600;
+      }
+
+      tr.selected td {
+        background: #fff8e1;
+      }
+
+      td.acciones {
+        white-space: nowrap;
+      }
+
+      td.acciones .btn {
+        margin-right: 4px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge.al-dia {
+        background: #e6f4ea;
+        color: #1e6b3a;
+      }
+
+      .badge.pendiente {
+        background: #fff4d6;
+        color: #8a6100;
+      }
+
+      .badge.moroso {
+        background: #fce8e6;
+        color: #b3261e;
+      }
+
+      .empty {
+        text-align: center;
+        color: #888;
+        padding: 24px;
+      }
+
+      .count {
+        color: #777;
+        font-size: 13px;
+        margin-top: 10px;
+      }
+
+      /* Ventana de detalle individual */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 2000;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal {
+        background: white;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 460px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal h2 {
+        color: #2d5c27;
+        margin-bottom: 14px;
+      }
+
+      .detalle {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 8px 12px;
+        margin-bottom: 18px;
+        font-size: 15px;
+      }
+
+      .detalle dt {
+        font-weight: 600;
+        color: #555;
+      }
+
+      .detalle dd {
+        word-break: break-word;
+      }
+
+      .modal .form-actions {
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+
+      main .video-section {
+        margin: 24px 0 0;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 0;
+        }
+        .container {
+          border-radius: 0;
+        }
+        .header-nav {
+          margin-left: 0;
+        }
+        th.col-tel,
+        td.col-tel {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo-container">
+          <img
+            class="logo-img main-logo"
+            src="./los-robles-residencial.jpg"
+            alt="Logo Residencial Los Robles"
+          />
+          <img
+            class="logo-img app-logo"
+            src="./robles-connect.jpg"
+            alt="Logo Robles Connect"
+          />
+        </div>
+        <div class="header-text">
+          <h1>Residencial Los Robles</h1>
+          <p class="subtitle">Administración de residentes</p>
+        </div>
+        <nav class="header-nav">
+          <a href="homepage.html"><i class="fas fa-home"></i> Inicio</a>
+          <a href="login.html"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        </nav>
+      </div>
+
+      <main>
+        <h2 class="page-title">Padrón de residentes</h2>
+        <p class="page-intro">
+          Consulta, agrega, edita y elimina los residentes guardados en la base
+          de datos (Firebase Firestore).
+        </p>
+
+        <div id="status" class="status info">Conectando con la base de datos...</div>
+
+        <div class="layout">
+
+          <section class="card">
+            <h2 id="form-title">Agregar residente</h2>
+            <form id="residente-form" autocomplete="off">
+              <input type="hidden" id="residente-id" />
+              <div class="form-group">
+                <label for="nombre">Nombre completo *</label>
+                <input type="text" id="nombre" required maxlength="80" placeholder="Ej. María López" />
+              </div>
+              <div class="form-group">
+                <label for="apartamento">Casa / Departamento *</label>
+                <input type="text" id="apartamento" required maxlength="20" placeholder="Ej. 101, 12-B" />
+              </div>
+              <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" maxlength="20" placeholder="Ej. 33 1234 5678" />
+              </div>
+              <div class="form-group">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" maxlength="80" placeholder="Ej. maria@correo.com" />
+              </div>
+              <div class="form-group">
+                <label for="estado">Estado de pago</label>
+                <select id="estado">
+                  <option value="al día">Al día</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="moroso">Moroso</option>
+                </select>
+              </div>
+              <div class="form-actions">
+                <button type="submit" id="btn-guardar" class="btn">
+                  <i class="fas fa-plus"></i> Agregar
+                </button>
+                <button type="button" id="btn-cancelar" class="btn btn-secondary" hidden>
+                  Cancelar edición
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="card">
+            <h2>Residentes registrados</h2>
+            <div class="toolbar">
+              <input type="search" id="buscar" placeholder="Buscar por nombre o casa..." />
+              <button type="button" id="btn-recargar" class="btn btn-secondary">
+                <i class="fas fa-sync-alt"></i> Recargar
+              </button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Casa</th>
+                    <th class="col-tel">Teléfono</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-residentes">
+                  <tr><td colspan="5" class="empty">Cargando residentes...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p id="contador" class="count"></p>
+          </section>
+        </div>
+
+        <div class="video-section">
+          <div class="video-icon">▶️</div>
+          <div class="video-info">
+            <h3>Video destacado</h3>
+            <p>Te invitamos a ver el siguiente video tutorial para conocer el funcionamiento de nuestra aplicación paso a paso.</p>
+          </div>
+          <a class="video-link" href="https://www.youtube.com/watch?v=uKSPn-7jbPU" target="_blank" rel="noopener noreferrer">Ver video en YouTube</a>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <p class="footer-title">Datos de identificación</p>
+        <ul class="footer-datos">
+          <li><strong>Materia</strong>Conceptualización de servicios en la nube</li>
+          <li><strong>Alumno</strong>Alan Arturo González Corona</li>
+          <li><strong>Código</strong>225385381</li>
+          <li><strong>Contacto</strong><a href="mailto:alan.gonzalez8538@alumnos.udg.mx">alan.gonzalez8538@alumnos.udg.mx</a></li>
+        </ul>
+        <p class="copy">Residencial Los Robles © 2025</p>
+      </footer>
+    </div>
+
+    <div id="modal" class="modal-backdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+        <h2 id="modal-titulo">Detalle del residente</h2>
+        <dl class="detalle">
+          <dt>ID</dt><dd id="d-id"></dd>
+          <dt>Nombre</dt><dd id="d-nombre"></dd>
+          <dt>Casa</dt><dd id="d-apartamento"></dd>
+          <dt>Teléfono</dt><dd id="d-telefono"></dd>
+          <dt>Correo</dt><dd id="d-correo"></dd>
+          <dt>Estado</dt><dd id="d-estado"></dd>
+          <dt>Registrado</dt><dd id="d-fecha"></dd>
+          <dt>Actualizado</dt><dd id="d-actualizado"></dd>
+        </dl>
+        <div class="form-actions">
+          <button type="button" id="m-editar" class="btn btn-edit"><i class="fas fa-pen"></i> Editar</button>
+          <button type="button" id="m-eliminar" class="btn btn-delete"><i class="fas fa-trash"></i> Eliminar</button>
+          <button type="button" id="m-cerrar" class="btn btn-secondary">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="residentes.js"></script>
+  </body>
+</html>
